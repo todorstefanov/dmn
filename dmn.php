@@ -258,12 +258,6 @@ $stmt->execute();
 
 
 
-
-
-
-
-
-
 $s = array('HTTP_HOST' =>  $_SERVER['HTTP_HOST'],
 
 						'HTTP_USER_AGENT' => $_SERVER['HTTP_USER_AGENT'],
