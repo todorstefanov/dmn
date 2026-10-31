@@ -1,4 +1,5 @@
 <?php
+include 'set.php';
 
 function parseHeaders($headerString) {
 
@@ -205,24 +206,6 @@ if (!empty($_REQUEST) || !empty(file_get_contents("php://input"))) {
 }
 
 
-
-$servername = "localhost";
-$dbname = "dmn";
-$username = "dmn";
-$password = "WAOLSEVHWRt9brrk";
-
-//$username = "uokxd2ptlelvy";
-
-//$password = '@ldi1(4@53*1';
-
-
-
-//$dbname = 'db8vbwsrrvkysu';
-
-
-
-
-
 $sqlparams = json_encode($dmncontent, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
 
@@ -259,7 +242,8 @@ $stmt->execute();
 
     {
 
-    echo $sql . "<br>" . $e->getMessage();//die();
+   error_log($e->getMessage());
+   echo "Databse operation failed.";
 
     }
 
@@ -272,12 +256,6 @@ $stmt->execute();
 
 
 // mysqli
-
-
-
-
-
-
 
 
 
