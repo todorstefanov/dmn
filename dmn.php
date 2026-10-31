@@ -242,7 +242,8 @@ $stmt->execute();
 
     {
 
-    echo $sql . "<br>" . $e->getMessage();//die();
+   error_log($e->getMessage());
+   echo "Databse operation failed.";
 
     }
 
