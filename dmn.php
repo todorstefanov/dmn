@@ -83,7 +83,7 @@ if(empty($_REQUEST)){
 
 	if(isset($_REQUEST['clear']) && $_REQUEST['clear'] === 'true') {
 
-		clearLogFile();
+		//clearLogFile();
 
 		die("logFile cleared");
 
