@@ -52,15 +52,15 @@ if(empty($_REQUEST)){
 <body>
 
 	<div id="tableData">
-
 		<?php 
 
 		// print_r($body);
 
 		?>
-
 	</div>
 
+	<h2>GET action</h2>
+	<p>To invoke an action, send a GET request with the <code>action</code> query parameter, for example <code>dmn.php?action=404</code>. Supported status actions are <code>400</code>, <code>403</code>, <code>404</code>, and <code>500</code>. Other action values are returned in the response; you can also include an optional <code>message</code> parameter, for example <code>dmn.php?action=example&amp;message=Something+went+wrong</code>.</p>
 
 
 </body>
