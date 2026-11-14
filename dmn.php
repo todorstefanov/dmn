@@ -79,26 +79,6 @@ if(empty($_REQUEST)){
 
 	;
 
-	#accept DMN call
-
-	if(isset($_REQUEST['clear']) && $_REQUEST['clear'] === 'true') {
-
-		//clearLogFile();
-
-		die("logFile cleared");
-
-
-
-
-
-	} else {
-
-
-
-
-
-
-
 	if (isset($_GET['action'])) {
 
 
@@ -268,10 +248,6 @@ $s = array('HTTP_HOST' =>  $_SERVER['HTTP_HOST'],
  );
 
 $sqlparams = $_REQUEST;
-
-
-
-}
 
 ;
 
