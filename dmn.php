@@ -33,6 +33,31 @@ function parseHeaders($headerString) {
 
 }
 
+$userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+$isJavaClient = preg_match('/(?:Java\/|Apache-HttpClient\/)/i', $userAgent) === 1;
+$requestHeaders = apache_request_headers();
+
+function renderRequestTable($params, $headers) {
+    echo '<table border="1"><thead><tr><th>Paramname</th><th>Value</th></tr></thead><tbody>';
+
+    foreach ($params as $name => $value) {
+        $displayValue = is_scalar($value) || $value === null
+            ? (string) $value
+            : json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        echo '<tr><td>' . htmlspecialchars((string) $name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+            . '</td><td>' . htmlspecialchars($displayValue === false ? '' : $displayValue, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+            . '</td></tr>';
+    }
+
+    foreach ($headers as $name => $value) {
+        echo '<tr><td>' . htmlspecialchars('Header: ' . $name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+            . '</td><td>' . htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+            . '</td></tr>';
+    }
+
+    echo '</tbody></table>';
+}
+
 
 
 if(empty($_REQUEST)){
@@ -54,13 +79,17 @@ if(empty($_REQUEST)){
 	<div id="tableData">
 		<?php 
 
+		if (!$isJavaClient) {
+			renderRequestTable([], $requestHeaders);
+		}
+
 		// print_r($body);
 
 		?>
 	</div>
 
 	<h2>GET action</h2>
-	<p>To invoke an action, send a GET request with the <code>action</code> query parameter, for example <code>dmn.php?action=404</code>. Supported status actions are <code>400</code>, <code>403</code>, <code>404</code>, and <code>500</code>. Other action values are returned in the response; you can also include an optional <code>message</code> parameter, for example <code>dmn.php?action=example&amp;message=Something+went+wrong</code>.</p>
+	<p>To invoke an action, send a GET request with the <code>action</code> query parameter, for example <code>dmn.php?action=404</code>. Supported status actions are <code>400</code>, <code>403</code>, <code>404</code>, and <code>500</code>. For Java HTTP clients, other action values are returned in the response; browser requests display their parameters and headers in a table. You can also include an optional <code>message</code> parameter, for example <code>dmn.php?action=example&amp;message=Something+went+wrong</code>.</p>
 
 
 </body>
@@ -71,7 +100,7 @@ if(empty($_REQUEST)){
 
 	
 
-	} 
+	}
 
 		
 
@@ -111,13 +140,13 @@ if(empty($_REQUEST)){
 
 			default:
 
-					if (isset($_GET['message'])) {
+					if ($isJavaClient && isset($_GET['message'])) {
 
 					 echo 'action='.$_GET['action'].'&message='.$_GET['message'].'&errorCode='.$_GET['message'].'&merchantUniqueId='.date("d-m-Y h:m:s").date("H:i:s").rand(1, 10000);
 
 						
 
-					}else{
+					}elseif ($isJavaClient){
 
 					echo 'action='.$_GET['action'];
 
@@ -129,6 +158,20 @@ if(empty($_REQUEST)){
 
 	};
 
+	if (!empty($_REQUEST) && !$isJavaClient) {
+		?>
+<html>
+<head>
+	<title>StefanovWeb DMN request</title>
+</head>
+<body>
+	<h2>Incoming request</h2>
+	<?php renderRequestTable($_REQUEST, $requestHeaders); ?>
+</body>
+</html>
+		<?php
+	}
+
 
 
 $main  = array();
@@ -137,7 +180,7 @@ $main['server_name'] = $_SERVER['SERVER_NAME'];
 
 $main['remote_addr'] = $_SERVER['REMOTE_ADDR'];
 
-foreach (apache_request_headers() as $key => $value) {
+foreach ($requestHeaders as $key => $value) {
 
 	$strkey = mb_strtolower($key);
 
